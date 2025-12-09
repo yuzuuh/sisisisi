@@ -7,7 +7,7 @@ require("dotenv").config();
 const app = express();
 
 // Basic configuration
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Enable CORS for all routes
 app.use(cors());
@@ -23,7 +23,7 @@ app.use(express.json());
 
 // Connect to MongoDB (Mongoose 7/8 syntax)
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.DB)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -41,8 +41,18 @@ app.get("/", function (req, res) {
 require("./routes/api.js")(app);
 require("./routes/fcctesting.js")(app);
 
+// Board pages
+app.route('/b/:board/')
+  .get(function (req, res) {
+    res.sendFile(process.cwd() + '/views/board.html');
+  });
+app.route('/b/:board/:threadid')
+  .get(function (req, res) {
+    res.sendFile(process.cwd() + '/views/thread.html');
+  });
+
 // Start listening for requests
-app.listen(port, function () {
+app.listen(port, '0.0.0.0', function () {
   console.log(`Listening on port ${port}`);
 });
 

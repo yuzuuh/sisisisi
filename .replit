@@ -9,6 +9,7 @@ channel = "stable-25_05"
 
 [userenv.shared]
 PORT = "5000"
+NODE_ENV = "test"
 
 [workflows]
 runButton = "Project"
@@ -37,6 +38,10 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 37203
+externalPort = 3001
 
 [[ports]]
 localPort = 41707

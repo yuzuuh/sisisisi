@@ -15,18 +15,9 @@ exports.createThread = async (req, res) => {
     replies: [],
   });
 
-  const savedThread = await newThread.save();
+  await newThread.save();
 
-  // FCC requires returning the whole object for testing
-  return res.json({
-    _id: savedThread._id,
-    text: savedThread.text,
-    created_on: savedThread.created_on,
-    bumped_on: savedThread.bumped_on,
-    reported: savedThread.reported,
-    delete_password: savedThread.delete_password,
-    replies: savedThread.replies,
-  });
+  return res.redirect(`/b/${board}/`);
 };
 
 // GET THREADS (FCC: must include text + limit replies to 3)
@@ -69,7 +60,7 @@ exports.deleteThread = async (req, res) => {
 
 // REPORT THREAD
 exports.reportThread = async (req, res) => {
-  const { thread_id } = req.body;
+  const thread_id = req.body.thread_id || req.body.report_id;
 
   const thread = await Thread.findById(thread_id);
   if (!thread) return res.send("thread not found");

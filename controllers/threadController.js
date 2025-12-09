@@ -17,7 +17,7 @@ exports.createThread = async (req, res) => {
 
   const savedThread = await newThread.save();
 
-  // FCC requires returning JSON of created thread
+  // FCC requires returning the whole object for testing
   return res.json({
     _id: savedThread._id,
     text: savedThread.text,
@@ -29,7 +29,7 @@ exports.createThread = async (req, res) => {
   });
 };
 
-// GET THREADS
+// GET THREADS (FCC: must include text + limit replies to 3)
 exports.getThreads = async (req, res) => {
   const { board } = req.params;
 
@@ -40,12 +40,12 @@ exports.getThreads = async (req, res) => {
 
   const formatted = threads.map((t) => ({
     _id: t._id,
-    text: t.text,
+    text: t.text, // REQUIRED FOR FCC
     created_on: t.created_on,
     bumped_on: t.bumped_on,
     replies: t.replies.slice(-3).map((r) => ({
       _id: r._id,
-      text: r.text,
+      text: r.text, // REQUIRED FOR FCC
       created_on: r.created_on,
     })),
   }));
@@ -58,7 +58,7 @@ exports.deleteThread = async (req, res) => {
   const { thread_id, delete_password } = req.body;
 
   const thread = await Thread.findById(thread_id);
-  if (!thread) return res.send("thread not found");
+  if (!thread) return res.send("incorrect password");
 
   if (thread.delete_password !== delete_password)
     return res.send("incorrect password");

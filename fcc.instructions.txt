@@ -1,0 +1,138 @@
+FREECODECAMP - MESSAGE BOARD PROJECT
+====================================
+
+Estas son las consignas oficiales y exactas que SE DEBEN cumplir para pasar las pruebas automáticas de FreeCodeCamp.  
+Cualquier código generado o modificado DEBE seguir estas reglas estrictamente.
+
+------------------------------------
+MODELOS (Mongoose / MongoDB)
+------------------------------------
+
+THREAD (hilos)
+- board: String
+- text: String
+- delete_password: String
+- created_on: Date
+- bumped_on: Date
+- reported: Boolean (default: false)
+- replies: [Reply] (array con respuestas)
+
+REPLY (respuestas)
+- text: String
+- delete_password: String
+- created_on: Date
+- reported: Boolean (default: false)
+
+------------------------------------
+RUTAS PARA /api/threads/:board
+------------------------------------
+
+1. POST /api/threads/:board
+   - Crea un nuevo thread en el board especificado.
+   - Campos requeridos:
+       text
+       delete_password
+   - Valores automáticos:
+       created_on = nueva fecha
+       bumped_on = nueva fecha
+       reported = false
+       replies = []
+   - Debe redirigir a /b/:board/ después de crear.
+
+2. GET /api/threads/:board
+   - Devuelve los 10 hilos más recientes, ordenados por bumped_on.
+   - Cada hilo debe incluir SOLO:
+       _id
+       text
+       created_on
+       bumped_on
+       replies (MÁXIMO 3, ordenadas por created_on)
+   - NO debe incluir:
+       delete_password
+       reported
+
+3. DELETE /api/threads/:board
+   - Recibe:
+       thread_id
+       delete_password
+   - Si la clave es correcta → eliminar el hilo (borrado completo).
+       Respuesta: "success"
+   - Si la clave NO es correcta:
+       Respuesta: "incorrect password"
+
+4. PUT /api/threads/:board
+   - Recibe:
+       thread_id
+   - Marca el hilo como reportado:
+       reported = true
+   - Respuesta: "reported"
+
+------------------------------------
+RUTAS PARA /api/replies/:board
+------------------------------------
+
+1. POST /api/replies/:board
+   - Crea una respuesta dentro de un hilo.
+   - Campos requeridos:
+       thread_id
+       text
+       delete_password
+   - Al agregar una respuesta:
+       bumped_on del hilo se actualiza a la fecha actual.
+   - Redirigir a /b/:board/:thread_id
+
+2. GET /api/replies/:board
+   - Recibe:
+       thread_id
+   - Devuelve un hilo completo con todos sus replies.
+   - El hilo NO debe incluir:
+       delete_password
+       reported
+   - Cada reply NO debe incluir:
+       delete_password
+       reported
+
+3. PUT /api/replies/:board
+   - Recibe:
+       thread_id
+       reply_id
+   - Marca la respuesta como reportada:
+       reported = true
+   - Respuesta: "reported"
+
+4. DELETE /api/replies/:board
+   - Recibe:
+       thread_id
+       reply_id
+       delete_password
+   - Si la clave es correcta:
+       NO se elimina el mensaje → el texto pasa a ser "deleted"
+       Respuesta: "success"
+   - Si la clave es incorrecta:
+       Respuesta: "incorrect password"
+
+------------------------------------
+REGLAS IMPORTANTES DEL PROYECTO
+------------------------------------
+
+- No eliminar respuestas del array, solo reemplazar el texto con "deleted".
+- Todas las fechas deben ser objetos Date válidos.
+- NO modificar el formato de las respuestas.
+- NO devolver delete_password ni reported en GET.
+- Las rutas DEBEN usar req.params.board para identificar el board.
+- Todas las operaciones deben hacerse sobre el board indicado.
+- Las pruebas de FCC esperan EXACTAMENTE estos nombres y formatos.
+
+------------------------------------
+INSTRUCCIONES PARA IA DE REPLIT
+------------------------------------
+
+Cualquier código generado o modificado debe:
+
+1. Seguir estrictamente estas reglas.
+2. No inventar otras propiedades, rutas o estructuras.
+3. No cambiar nombres de campos.
+4. No usar sintaxis distinta a Express + Mongoose nivel básico.
+5. No agregar carpetas extra innecesarias.
+6. Mantener compatibilidad con las pruebas automáticas de FCC.
+

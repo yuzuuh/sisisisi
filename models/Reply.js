@@ -1,9 +1,10 @@
+// models/Reply.js
 const mongoose = require("mongoose");
 
 const replySchema = new mongoose.Schema({
-  text: { type: String, required: true },
-  delete_password: { type: String, required: true },
-  created_on: { type: Date, default: Date.now },
+  text: String,
+  delete_password: String,
+  created_on: Date,
   reported: { type: Boolean, default: false },
 });
 

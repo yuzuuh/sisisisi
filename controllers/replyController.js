@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Thread = require("../models/Thread");
 
 module.exports = {
+  // CREATE REPLY
   async createReply(req, res) {
     const board = req.params.board;
     const { text, delete_password, thread_id } = req.body;
@@ -27,19 +28,18 @@ module.exports = {
     return res.redirect(`/b/${board}/${thread_id}`);
   },
 
+  // GET REPLIES
   async getReplies(req, res) {
     const thread_id = req.query.thread_id;
 
     const thread = await Thread.findById(thread_id).lean();
     if (!thread) return res.send("thread not found");
 
-    const formattedReplies = thread.replies.map((reply) => {
-      return {
-        _id: reply._id,
-        text: reply.text,
-        created_on: reply.created_on,
-      };
-    });
+    const formattedReplies = thread.replies.map((reply) => ({
+      _id: reply._id,
+      text: reply.text,
+      created_on: reply.created_on,
+    }));
 
     const formattedThread = {
       _id: thread._id,
@@ -52,6 +52,7 @@ module.exports = {
     res.json(formattedThread);
   },
 
+  // REPORT REPLY (TEST 12)
   async reportReply(req, res) {
     const { thread_id, reply_id } = req.body;
 
@@ -65,9 +66,10 @@ module.exports = {
 
     await thread.save();
 
-    res.send("reported");
+    return res.send("reported");
   },
 
+  // DELETE REPLY
   async deleteReply(req, res) {
     const { thread_id, reply_id, delete_password } = req.body;
 
@@ -84,6 +86,7 @@ module.exports = {
 
     await thread.save();
 
-    res.send("success");
+    return res.send("success");
   },
 };
+

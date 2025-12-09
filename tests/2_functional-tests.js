@@ -47,6 +47,7 @@ suite("Functional Tests", () => {
             assert.exists(res.body[0].bumped_on);
             assert.exists(res.body[0].text);
             assert.exists(res.body[0].replies);
+            assert.property(res.body[0], "replycount");
             assert.notProperty(res.body[0], "delete_password");
             assert.notProperty(res.body[0], "reported");
             done();
@@ -63,32 +64,6 @@ suite("Functional Tests", () => {
           .end((err, res) => {
             assert.equal(res.status, 200);
             assert.equal(res.text, "reported");
-            done();
-          });
-      });
-    });
-
-    suite("DELETE", () => {
-      test("Delete a thread with the incorrect delete_password", (done) => {
-        chai
-          .request(server)
-          .delete("/api/threads/test")
-          .send({ thread_id: testThreadId, delete_password: "wrong_password" })
-          .end((err, res) => {
-            assert.equal(res.status, 200);
-            assert.equal(res.text, "incorrect password");
-            done();
-          });
-      });
-
-      test("Delete a thread with the correct delete_password", (done) => {
-        chai
-          .request(server)
-          .delete("/api/threads/test")
-          .send({ thread_id: testThreadId, delete_password: "password" })
-          .end((err, res) => {
-            assert.equal(res.status, 200);
-            assert.equal(res.text, "success");
             done();
           });
       });
@@ -186,6 +161,32 @@ suite("Functional Tests", () => {
             done();
           });
       });
+    });
+  });
+
+  suite("DELETE /api/threads/:board", () => {
+    test("Delete a thread with the incorrect delete_password", (done) => {
+      chai
+        .request(server)
+        .delete("/api/threads/test")
+        .send({ thread_id: testThreadId, delete_password: "wrong_password" })
+        .end((err, res) => {
+          assert.equal(res.status, 200);
+          assert.equal(res.text, "incorrect password");
+          done();
+        });
+    });
+
+    test("Delete a thread with the correct delete_password", (done) => {
+      chai
+        .request(server)
+        .delete("/api/threads/test")
+        .send({ thread_id: testThreadId, delete_password: "password" })
+        .end((err, res) => {
+          assert.equal(res.status, 200);
+          assert.equal(res.text, "success");
+          done();
+        });
     });
   });
 });

@@ -31,12 +31,13 @@ exports.getThreads = async (req, res) => {
 
   const formatted = threads.map((t) => ({
     _id: t._id,
-    text: t.text, // REQUIRED FOR FCC
+    text: t.text,
     created_on: t.created_on,
     bumped_on: t.bumped_on,
+    replycount: t.replies.length,
     replies: t.replies.slice(-3).map((r) => ({
       _id: r._id,
-      text: r.text, // REQUIRED FOR FCC
+      text: r.text,
       created_on: r.created_on,
     })),
   }));

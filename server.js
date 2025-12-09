@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 
 // Serve static files from /public
-app.use(express.static("public"));
+app.use('/public', express.static("public"));
 
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({ extended: true }));

@@ -1,11 +1,13 @@
-// models/Reply.js
 const mongoose = require("mongoose");
 
-const replySchema = new mongoose.Schema({
-  text: String,
-  delete_password: String,
-  created_on: Date,
-  reported: { type: Boolean, default: false },
-});
+const replySchema = new mongoose.Schema(
+  {
+    text: { type: String, required: true },
+    delete_password: { type: String, required: true },
+    reported: { type: Boolean, default: false },
+    created_on: { type: Date, default: Date.now },
+  },
+  { _id: true }, // FCC requiere _id en replies
+);
 
 module.exports = replySchema;

@@ -1,13 +1,12 @@
-// models/Thread.js
 const mongoose = require("mongoose");
 const replySchema = require("./Reply");
 
 const threadSchema = new mongoose.Schema({
-  board: String,
-  text: String,
-  delete_password: String,
-  created_on: Date,
-  bumped_on: Date,
+  board: { type: String, required: true },
+  text: { type: String, required: true },
+  delete_password: { type: String, required: true },
+  created_on: { type: Date, default: Date.now },
+  bumped_on: { type: Date, default: Date.now },
   reported: { type: Boolean, default: false },
   replies: [replySchema],
 });

@@ -1,22 +1,26 @@
+"use strict";
+
 const mongoose = require("mongoose");
 
 const replySchema = new mongoose.Schema({
-  text: { type: String, required: true },
-  delete_password: { type: String, required: true },
-  created_on: { type: Date, default: Date.now },
-  reported: { type: Boolean, default: false },
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId(),
+  },
+  text: String,
+  delete_password: String,
+  created_on: Date,
+  reported: Boolean,
 });
 
 const threadSchema = new mongoose.Schema({
-  board: { type: String, required: true },
-  text: { type: String, required: true },
-  delete_password: { type: String, required: true },
-  created_on: { type: Date, default: Date.now },
-  bumped_on: { type: Date, default: Date.now },
-  reported: { type: Boolean, default: false },
+  board: String,
+  text: String,
+  delete_password: String,
+  created_on: Date,
+  bumped_on: Date,
+  reported: Boolean,
   replies: [replySchema],
 });
 
-const Thread = mongoose.model("Thread", threadSchema);
-
-module.exports = Thread;
+module.exports = mongoose.model("Thread", threadSchema);

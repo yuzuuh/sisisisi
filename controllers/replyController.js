@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Thread = require("../models/Thread");
 
 module.exports = {
@@ -10,18 +9,16 @@ module.exports = {
     const thread = await Thread.findById(thread_id);
     if (!thread) return res.send("thread not found");
 
-    const created_on = new Date();
-
     const reply = {
-      _id: new mongoose.Types.ObjectId(),
       text,
       delete_password,
-      created_on,
       reported: false,
+      created_on: new Date()
     };
 
+    // Mongoose generará _id automáticamente
     thread.replies.push(reply);
-    thread.bumped_on = created_on;
+    thread.bumped_on = new Date();
 
     await thread.save();
 
@@ -38,7 +35,7 @@ module.exports = {
     const formattedReplies = thread.replies.map((reply) => ({
       _id: reply._id,
       text: reply.text,
-      created_on: reply.created_on,
+      created_on: reply.created_on
     }));
 
     const formattedThread = {
@@ -46,13 +43,13 @@ module.exports = {
       text: thread.text,
       created_on: thread.created_on,
       bumped_on: thread.bumped_on,
-      replies: formattedReplies,
+      replies: formattedReplies
     };
 
     res.json(formattedThread);
   },
 
-  // REPORT REPLY (TEST 12)
+  // REPORT REPLY
   async reportReply(req, res) {
     const { thread_id, reply_id } = req.body;
 
@@ -87,6 +84,6 @@ module.exports = {
     await thread.save();
 
     return res.send("success");
-  },
+  }
 };
 

@@ -21,13 +21,19 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
-// Connect to MongoDB (Mongoose 7/8 syntax)
-mongoose
-  .connect(process.env.DB)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+// Connect to MongoDB (only if DB is configured)
+if (process.env.DB) {
+  mongoose
+    .connect(process.env.DB)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.error("MongoDB connection error:", err));
+} else {
+  console.warn("DB env var not set; skipping MongoDB connection");
+}
 
 // Security Middleware with Helmet
+app.use(helmet.hidePoweredBy());
+app.use(helmet.noSniff());
 app.use(helmet.frameguard({ action: "sameorigin" }));
 app.use(helmet.dnsPrefetchControl({ allow: false }));
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));

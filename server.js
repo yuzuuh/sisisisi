@@ -21,6 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
 
+// Optional: align mongoose query strictness
+try { mongoose.set('strictQuery', false); } catch (e) {}
+
 // Connect to MongoDB (only if DB is configured)
 if (process.env.DB) {
   mongoose
@@ -57,8 +60,11 @@ app.route('/b/:board/:threadid')
     res.sendFile(process.cwd() + '/views/thread.html');
   });
 
-// Start listening for requests (only when run directly, not when imported for tests)
-if (require.main === module) {
+// Health check endpoint for Render (does not require DB)
+app.get('/health', function (req, res) { res.send('ok'); });
+
+// Start listening for requests in non-test environments or when run directly
+if (process.env.NODE_ENV !== 'test' || require.main === module) {
   app.listen(port, '0.0.0.0', function () {
     console.log(`Listening on port ${port}`);
   });

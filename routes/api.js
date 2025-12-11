@@ -6,15 +6,15 @@ const replyController = require("../controllers/replyController");
 module.exports = function (app) {
   app
     .route("/api/threads/:board")
-    .get(threadController.createThread)
-    .post(threadController.getThreads)
+    .post(threadController.createThread)
+    .get(threadController.getThreads)
     .put(threadController.reportThread)
     .delete(threadController.deleteThread);
 
   app
     .route("/api/replies/:board")
-    .get(replyController.createReply)
-    .post(replyController.getReplies)
+    .post(replyController.createReply)
+    .get(replyController.getReplies)
     .put(replyController.reportReply)
     .delete(replyController.deleteReply);
 };

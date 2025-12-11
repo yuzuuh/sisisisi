@@ -9,16 +9,16 @@ module.exports = {
     const thread = await Thread.findById(thread_id);
     if (!thread) return res.send("thread not found");
 
+    const now = new Date();
     const reply = {
       text,
       delete_password,
       reported: false,
-      created_on: new Date()
+      created_on: now
     };
 
-    // Mongoose generará _id automáticamente
     thread.replies.push(reply);
-    thread.bumped_on = new Date();
+    thread.bumped_on = now;
 
     await thread.save();
 

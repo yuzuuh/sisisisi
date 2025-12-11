@@ -10,16 +10,15 @@ module.exports = {
     const thread = await Thread.findById(thread_id);
     if (!thread) return res.send("thread not found");
 
-    // Ensure reply has all required fields and capture created_on
     const createdOn = new Date();
+
     const reply = {
       text,
       delete_password,
       reported: false,
-      created_on: createdOn,
+      created_on: createdOn
     };
 
-    // Push reply (Mongoose will assign _id), and set bumped_on to reply's created_on
     thread.replies.push(reply);
     thread.bumped_on = createdOn;
 
@@ -30,24 +29,26 @@ module.exports = {
 
   // GET REPLIES
   async getReplies(req, res) {
-    const { thread_id } = req.query;
+    const thread_id = req.query.thread_id;
 
     const thread = await Thread.findById(thread_id).lean();
     if (!thread) return res.send("thread not found");
 
-    const formattedReplies = thread.replies.map((r) => ({
-      _id: r._id,
-      text: r.text,
-      created_on: r.created_on,
+    const formattedReplies = thread.replies.map((reply) => ({
+      _id: reply._id,
+      text: reply.text,
+      created_on: reply.created_on
     }));
 
-    return res.json({
+    const formattedThread = {
       _id: thread._id,
       text: thread.text,
       created_on: thread.created_on,
       bumped_on: thread.bumped_on,
-      replies: formattedReplies,
-    });
+      replies: formattedReplies
+    };
+
+    return res.json(formattedThread); // ← FALTABA ESTE RETURN
   },
 
   // REPORT REPLY
@@ -84,5 +85,5 @@ module.exports = {
     await thread.save();
 
     return res.send("success");
-  },
+  }
 };

@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Thread = require("../models/Thread");
 
 module.exports = {
@@ -9,16 +10,15 @@ module.exports = {
     const thread = await Thread.findById(thread_id);
     if (!thread) return res.send("thread not found");
 
-    const now = new Date();
     const reply = {
       text,
       delete_password,
       reported: false,
-      created_on: now
+      created_on: new Date(),
     };
 
     thread.replies.push(reply);
-    thread.bumped_on = now;
+    thread.bumped_on = new Date();
 
     await thread.save();
 
@@ -27,26 +27,24 @@ module.exports = {
 
   // GET REPLIES
   async getReplies(req, res) {
-    const thread_id = req.query.thread_id;
+    const { thread_id } = req.query;
 
     const thread = await Thread.findById(thread_id).lean();
     if (!thread) return res.send("thread not found");
 
-    const formattedReplies = thread.replies.map((reply) => ({
-      _id: reply._id,
-      text: reply.text,
-      created_on: reply.created_on
+    const formattedReplies = thread.replies.map((r) => ({
+      _id: r._id,
+      text: r.text,
+      created_on: r.created_on,
     }));
 
-    const formattedThread = {
+    return res.json({
       _id: thread._id,
       text: thread.text,
       created_on: thread.created_on,
       bumped_on: thread.bumped_on,
-      replies: formattedReplies
-    };
-
-    res.json(formattedThread);
+      replies: formattedReplies,
+    });
   },
 
   // REPORT REPLY
@@ -80,10 +78,8 @@ module.exports = {
       return res.send("incorrect password");
 
     reply.text = "[deleted]";
-
     await thread.save();
 
     return res.send("success");
-  }
+  },
 };
-

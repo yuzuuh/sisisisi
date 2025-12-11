@@ -63,12 +63,10 @@ app.route('/b/:board/:threadid')
 // Health check endpoint for Render (does not require DB)
 app.get('/health', function (req, res) { res.send('ok'); });
 
-// Start listening for requests in non-test environments or when run directly
-if (process.env.NODE_ENV !== 'test' || require.main === module) {
-  app.listen(port, '0.0.0.0', function () {
-    console.log(`Listening on port ${port}`);
-  });
-}
+// Always start the server — required by FCC tests
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
 
 // Export the app for testing purposes
 module.exports = app;

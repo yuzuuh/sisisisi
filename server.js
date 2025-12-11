@@ -57,10 +57,12 @@ app.route('/b/:board/:threadid')
     res.sendFile(process.cwd() + '/views/thread.html');
   });
 
-// Start listening for requests
-app.listen(port, '0.0.0.0', function () {
-  console.log(`Listening on port ${port}`);
-});
+// Start listening for requests (only when run directly, not when imported for tests)
+if (require.main === module) {
+  app.listen(port, '0.0.0.0', function () {
+    console.log(`Listening on port ${port}`);
+  });
+}
 
 // Export the app for testing purposes
 module.exports = app;

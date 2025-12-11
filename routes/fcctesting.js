@@ -83,7 +83,12 @@ module.exports = function (app) {
   });
 
   app.get('/_api/app-info', function(req, res) {
-    res.json({ headers: res.getHeaders()});
+    const headers = {};
+    const rawHeaders = res.getHeaders();
+    for (const key in rawHeaders) {
+      headers[key] = String(rawHeaders[key]);
+    }
+    res.json({ headers: headers });
   });
   
 };

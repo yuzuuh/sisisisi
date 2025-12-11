@@ -66,9 +66,12 @@ exports.deleteThread = async (req, res) => {
   res.send("success");
 };
 
-// REPORT THREAD (FCC STRICT FORMAT)
+// REPORT THREAD (FCC STRICT)
 exports.reportThread = async (req, res) => {
-  const { thread_id } = req.body; // FCC ONLY LOOKS AT thread_id
+  const thread_id = req.body.thread_id || req.body.report_id; 
+  // FCC sometimes sends "report_id"
+
+  if (!thread_id) return res.send("thread not found");
 
   const thread = await Thread.findById(thread_id);
   if (!thread) return res.send("thread not found");

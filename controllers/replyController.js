@@ -48,7 +48,7 @@ module.exports = {
       replies: formattedReplies
     };
 
-    return res.json(formattedThread); // ← FALTABA ESTE RETURN
+    return res.json(formattedThread);
   },
 
   // REPORT REPLY

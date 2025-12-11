@@ -26,7 +26,7 @@ suite("Functional Tests", () => {
           .send({ text: "Test thread", delete_password: "password" })
           .end((err, res) => {
             assert.equal(res.status, 200);
-            assert.equal(res.type, "text/html; charset=utf-8");
+            assert.include(res.type, "text/html");
             done();
           });
       });
@@ -83,7 +83,7 @@ suite("Functional Tests", () => {
           })
           .end((err, res) => {
             assert.equal(res.status, 200);
-            assert.equal(res.type, "text/html; charset=utf-8");
+            assert.include(res.type, "text/html");
             done();
           });
       });

@@ -15,12 +15,19 @@ exports.createThread = async (req, res) => {
     replies: [],
   });
 
-  await newThread.save();
+  const saved = await newThread.save();
 
-  return res.redirect(`/b/${board}/`);
+  // FCC: MUST return JSON, not redirect
+  return res.json({
+    _id: saved._id,
+    text: saved.text,
+    created_on: saved.created_on,
+    bumped_on: saved.bumped_on,
+    replies: saved.replies,
+  });
 };
 
-// GET THREADS (FCC: must include text + limit replies to 3)
+// GET THREADS
 exports.getThreads = async (req, res) => {
   const { board } = req.params;
 
@@ -59,9 +66,9 @@ exports.deleteThread = async (req, res) => {
   res.send("success");
 };
 
-// REPORT THREAD
+// REPORT THREAD (FCC STRICT FORMAT)
 exports.reportThread = async (req, res) => {
-  const thread_id = req.body.thread_id || req.body.report_id;
+  const { thread_id } = req.body; // FCC ONLY LOOKS AT thread_id
 
   const thread = await Thread.findById(thread_id);
   if (!thread) return res.send("thread not found");
@@ -69,5 +76,5 @@ exports.reportThread = async (req, res) => {
   thread.reported = true;
   await thread.save();
 
-  res.send("reported");
+  return res.send("reported");
 };
